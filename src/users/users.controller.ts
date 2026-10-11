@@ -1,12 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, ParseIntPipe, ValidationPipe } from '@nestjs/common';
 import { UsersService } from './users.service.js';
+import { CreateUserDTO } from './dto/create-user.dto.js';
+import { UpdateUserDTO } from './dto/update-user.dto.js';
 
 export type ROLE = 'INTERN' | 'ENGINEER' | "ADMIN"
-export interface USER {
-  name: string,
-  email: string,
-  role: ROLE
-}
 
 @Controller('users')
 export class UsersController {
@@ -19,26 +16,22 @@ export class UsersController {
  }
 
  @Get(':id') //GET /users/:id
- findOne(@Param('id') id: string) {
-  return this.userService.findOne(+id)
+ findOne(@Param('id', ParseIntPipe) id: number) {
+  return this.userService.findOne(id)
  } 
 
  @Post()
- create(@Body() user: USER) {
-  return this.userService.create(user)
+ create(@Body(ValidationPipe) createUserDTO: CreateUserDTO) {
+  return this.userService.create(createUserDTO)
  }
 
  @Patch(':id') //PATCH /users/:id
- update(@Param('id') id: string, @Body() userUpdate: {
-      name?: string;
-      email?: string;
-      role?: ROLE;
-    }) {
-  return this.userService.update(+id, userUpdate)
+ update(@Param('id', ParseIntPipe) id: number, @Body(ValidationPipe) updateUserDTO: UpdateUserDTO) {
+  return this.userService.update(id, updateUserDTO)
  } 
 
  @Delete(':id') //DELETE /users/:id
- delete(@Param('id') id: string) {
-  return this.userService.delete(+id)
+ delete(@Param('id', ParseIntPipe) id: number) {
+  return this.userService.delete(id)
  } 
 }
