@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Ip } from '@nestjs/common';
 import { EmployeesService } from './employees.service.js';
 import {  employee } from '../database/schema.js';
 import type { ROLE } from '../users/users.controller.js';
 import { Throttle, SkipThrottle } from '@nestjs/throttler';
+import { MyLoggerService } from '../my-logger/my-logger.service.js';
 
 export type EmployeeCreateInput = typeof employee.$inferInsert
 export type EmployeeUpdateInput = Partial<typeof employee.$inferInsert>;
@@ -11,6 +12,7 @@ export type EmployeeUpdateInput = Partial<typeof employee.$inferInsert>;
 @Controller('employees')
 export class EmployeesController {
   constructor(private readonly employeesService: EmployeesService) {}
+  private readonly logger = new MyLoggerService(EmployeesController.name)
 
   @Post()
   create(@Body() createEmployeeDto: EmployeeCreateInput) {
@@ -18,7 +20,8 @@ export class EmployeesController {
   }
   @SkipThrottle({default: false})
   @Get()
-  findAll(@Query('role') role?: ROLE) {
+  findAll(@Ip() ip:string, @Query('role') role?: ROLE) {
+    this.logger.log(`Request for all employees\t${ip}`)
     return this.employeesService.findAll(role);
   }
   @Throttle({short: {ttl: 1000,limit: 1}})

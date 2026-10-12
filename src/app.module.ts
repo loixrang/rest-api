@@ -7,6 +7,7 @@ import { DatabaseModule } from './database/database.module.js';
 import { EmployeesModule } from './employees/employees.module.js';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { MyLoggerModule } from './my-logger/my-logger.module.js';
 
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 
@@ -30,7 +31,8 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
       name: 'long',
       ttl: 60000,
       limit: 100
-    }])
+    }]),
+    MyLoggerModule
   ],
   controllers: [AppController],
   providers: [AppService, {
