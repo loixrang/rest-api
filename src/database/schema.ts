@@ -4,7 +4,7 @@ export const userRole = pgEnum("role", [
   "INTERN", "ENGINEER", "ADMIN"
 ])
 
-export const users = pgTable("employee", {
+export const employee = pgTable("employee", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   name: text("name").notNull(),
   email: text("email").unique().notNull(),
