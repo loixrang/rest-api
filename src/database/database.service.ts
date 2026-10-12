@@ -1,6 +1,5 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { db } from './client.js';
-import { employee } from './schema.js';
 import { sql } from 'drizzle-orm';
 
 @Injectable()
